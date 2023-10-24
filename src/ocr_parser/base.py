@@ -3,6 +3,9 @@ from abc import ABCMeta, abstractmethod
 import layoutparser as lp
 from layoutparser.ocr.tesseract_agent import TesseractFeatureType
 from layoutparser import GCVFeatureType
+from environ import logging
+
+log = logging.getLogger(__name__)
 
 class LayoutParser(object, metaclass=ABCMeta):
     @abstractmethod
@@ -17,6 +20,7 @@ class LayoutParser(object, metaclass=ABCMeta):
 class TesseractLayoutParser(LayoutParser):
 
     def __init__(self):
+        log.info('Initializing TesseractAgent')
         self.ocr_agent = lp.TesseractAgent()
 
     def parse(self, image):
@@ -30,6 +34,7 @@ class TesseractLayoutParser(LayoutParser):
 class Detectron2LayoutParser(LayoutParser):
 
     def __init__(self):
+        log.info('Initializing Detectron2LayoutModel')
         self.ocr_agent = lp.Detectron2LayoutModel(
             config_path='lp://PubLayNet/mask_rcnn_X_101_32x8d_FPN_3x/config',  # In model catalog
             label_map={0: "Text", 1: "Title", 2: "List", 3: "Table", 4: "Figure"},  # In model`label_map`
@@ -47,6 +52,7 @@ class Detectron2LayoutParser(LayoutParser):
 class PaddleOCRParser(LayoutParser):
 
     def __init__(self):
+        log.info('Initializing PaddleDetectionLayoutModel')
         self.ocr_agent = lp.PaddleDetectionLayoutModel(
             config_path="lp://PubLayNet/ppyolov2_r50vd_dcn_365e/config",
             label_map={0: "Text", 1: "Title", 2: "List", 3: "Table", 4: "Figure"},
@@ -63,6 +69,7 @@ class PaddleOCRParser(LayoutParser):
 class GCVLayoutParser(LayoutParser):
 
     def __init__(self):
+        log.info('Initializing GCVAgent')
         self.ocr_agent = lp.GCVAgent(languages=['en'])
 
     def parse(self, image):
