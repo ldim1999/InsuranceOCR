@@ -1,0 +1,14 @@
+name: ocr_main
+channels:
+  - defaults
+  - conda-forge
+  - sdy623
+dependencies:
+  - python=3.9
+  - conda-forge::tesseract=5.3.2
+  - conda-forge::libcurl=8.4.0
+  #- conda-forge::detectron2=0.6 [not win]
+  - sdy623::detectron2=0.6+60944b7e
+  - pip
+  - pip:
+      - -r requirements.txt
