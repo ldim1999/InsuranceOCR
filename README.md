@@ -12,3 +12,7 @@ Parser choices defined ocr_parser.base:
 
 Note: Google Cloud Vision API key is required to use GCVLayoutParser. 
 It should be stored in the path defined by environment variable GOOGLE_APPLICATION_CREDENTIALS and defaulted to credentials\gcv.json
+
+Sample usage:
+
+_python main.py -f images/acordjpeg.jpg -p tesseract_
