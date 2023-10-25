@@ -1,47 +1,53 @@
 import os
-import cv2
 import argparse
 from environ import logging, get_root_dir
-from ocr_parser.base import TesseractLayoutParser, TesseractFeatureType, \
-    Detectron2LayoutParser, PaddleOCRParser, GCVLayoutParser, GCVFeatureType
+from ocr_parser.processor import extract_images
 
 log = logging.getLogger(__name__)
 current_module = __import__(__name__)
 
 
-def try_tesseract_parser(img):
+def try_tesseract_parser(imgfile):
+    from ocr_parser.base import TesseractLayoutParser
     parser = TesseractLayoutParser()
-    res = parser.parse(img)
-    log.info(res)
-    for f in (
-            TesseractFeatureType.BLOCK, TesseractFeatureType.PAGE,
-            TesseractFeatureType.PARA, TesseractFeatureType.LINE,
-            TesseractFeatureType.WORD):
-        log.info('%s: %s' % (f, parser.gather_data(res, f)))
+    for img in extract_images(imgfile):
+        res = parser.parse(img)
+        log.info(res)
+        for f in (
+                TesseractLayoutParser.TesseractFeatureType.BLOCK, TesseractLayoutParser.TesseractFeatureType.PAGE,
+                TesseractLayoutParser.TesseractFeatureType.PARA, TesseractLayoutParser.TesseractFeatureType.LINE,
+                TesseractLayoutParser.TesseractFeatureType.WORD):
+            log.info('%s: %s' % (f, parser.gather_data(res, f)))
 
 
-def try_detectron_parser(img):
+def try_detectron_parser(imgfile):
+    from ocr_parser.base import Detectron2LayoutParser
     parser = Detectron2LayoutParser()
-    res = parser.parse(img)
-    log.info(res)
-    # log.info(parser.gather_data(res))
+    for img in extract_images(imgfile):
+        res = parser.parse(img)
+        log.info(res)
+        # log.info(parser.gather_data(res))
 
 
-def try_paddle_parser(img):
+def try_paddle_parser(imgfile):
+    from ocr_parser.base import PaddleOCRParser
     parser = PaddleOCRParser()
-    res = parser.parse(img)
-    log.info(res)
+    for img in extract_images(imgfile):
+        res = parser.parse(img)
+        log.info(res)
 
 
-def try_gcv_parser(img):
+def try_gcv_parser(imgfile):
+    from ocr_parser.base import GCVLayoutParser
     parser = GCVLayoutParser()
-    res = parser.parse(img)
-    log.info(res.full_text_annotation.text)
-    for f in (
-            GCVFeatureType.BLOCK, GCVFeatureType.PAGE,
-            GCVFeatureType.PARA, GCVFeatureType.SYMBOL,
-            GCVFeatureType.WORD):
-        log.info('%s: %s' % (f, parser.gather_data(res, f).get_texts()))
+    for img in extract_images(imgfile):
+        res = parser.parse(img)
+        log.info(res.full_text_annotation.text)
+        for f in (
+                GCVLayoutParser.GCVFeatureType.BLOCK, GCVLayoutParser.GCVFeatureType.PAGE,
+                GCVLayoutParser.GCVFeatureType.PARA, GCVLayoutParser.GCVFeatureType.SYMBOL,
+                GCVLayoutParser.GCVFeatureType.WORD):
+            log.info('%s: %s' % (f, parser.gather_data(res, f).get_texts()))
 
 
 if __name__ == '__main__':
@@ -52,10 +58,8 @@ if __name__ == '__main__':
                         default='GCV')
     args = parser.parse_args()
 
-    img = cv2.imread(args.img_file)
-
     try:
         try_method = getattr(current_module, f'try_{args.parser.lower()}_parser')
-        try_method(img)
+        try_method(args.img_file)
     except:
         log.exception(f'Error trying {args.parser}')

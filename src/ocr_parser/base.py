@@ -1,8 +1,6 @@
 from abc import ABCMeta, abstractmethod
 
 import layoutparser as lp
-from layoutparser.ocr.tesseract_agent import TesseractFeatureType
-from layoutparser import GCVFeatureType
 from environ import logging
 
 log = logging.getLogger(__name__)
@@ -18,7 +16,7 @@ class LayoutParser(object, metaclass=ABCMeta):
 
 
 class TesseractLayoutParser(LayoutParser):
-
+    from layoutparser.ocr.tesseract_agent import TesseractFeatureType
     def __init__(self):
         log.info('Initializing TesseractAgent')
         self.ocr_agent = lp.TesseractAgent()
@@ -67,6 +65,7 @@ class PaddleOCRParser(LayoutParser):
 
 
 class GCVLayoutParser(LayoutParser):
+    from layoutparser import GCVFeatureType
 
     def __init__(self):
         log.info('Initializing GCVAgent')
