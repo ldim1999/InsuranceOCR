@@ -1,7 +1,7 @@
 import os
 import argparse
 from environ import logging, get_root_dir
-from ocr_parser.processor import extract_images
+from ocr_parser.image_processor import ImageProcessor
 
 log = logging.getLogger(__name__)
 current_module = __import__(__name__)
@@ -10,7 +10,7 @@ current_module = __import__(__name__)
 def try_tesseract_parser(imgfile):
     from ocr_parser.base import TesseractLayoutParser
     parser = TesseractLayoutParser()
-    for img in extract_images(imgfile):
+    for img in ImageProcessor.extract_images(imgfile):
         res = parser.parse(img)
         log.info(res)
         for f in (
@@ -23,7 +23,7 @@ def try_tesseract_parser(imgfile):
 def try_detectron_parser(imgfile):
     from ocr_parser.base import Detectron2LayoutParser
     parser = Detectron2LayoutParser()
-    for img in extract_images(imgfile):
+    for img in ImageProcessor.extract_images(imgfile):
         res = parser.parse(img)
         log.info(res)
         # log.info(parser.gather_data(res))
@@ -32,7 +32,7 @@ def try_detectron_parser(imgfile):
 def try_paddle_parser(imgfile):
     from ocr_parser.base import PaddleOCRParser
     parser = PaddleOCRParser()
-    for img in extract_images(imgfile):
+    for img in ImageProcessor.extract_images(imgfile):
         res = parser.parse(img)
         log.info(res)
 
@@ -40,7 +40,7 @@ def try_paddle_parser(imgfile):
 def try_gcv_parser(imgfile):
     from ocr_parser.base import GCVLayoutParser
     parser = GCVLayoutParser()
-    for img in extract_images(imgfile):
+    for img in ImageProcessor.extract_images(imgfile):
         res = parser.parse(img)
         log.info(res.full_text_annotation.text)
         for f in (
@@ -48,6 +48,14 @@ def try_gcv_parser(imgfile):
                 GCVLayoutParser.GCVFeatureType.PARA, GCVLayoutParser.GCVFeatureType.SYMBOL,
                 GCVLayoutParser.GCVFeatureType.WORD):
             log.info('%s: %s' % (f, parser.gather_data(res, f).get_texts()))
+
+
+def try_gcdai_parser(imgfile):
+    from processor.base import GCDAI_Processor
+    processor = GCDAI_Processor()
+    for img in ImageProcessor.extract_images(imgfile):
+        res = processor.process(img)
+        log.info(res.document.text)
 
 
 if __name__ == '__main__':

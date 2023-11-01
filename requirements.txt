@@ -2,6 +2,7 @@ layoutparser==0.3.4
 opencv-python==4.8.1.78
 torchvision==0.16.0
 google-cloud-vision==1.0.2
+google-cloud-documentai==2.20.1
 paddlepaddle==2.5.1
 Pillow==9.0.1
 PyMuPDF==1.23.5

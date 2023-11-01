@@ -1,6 +1,7 @@
 from abc import ABCMeta, abstractmethod
 
 import layoutparser as lp
+import numpy as np
 from environ import logging
 
 log = logging.getLogger(__name__)
@@ -22,7 +23,7 @@ class TesseractLayoutParser(LayoutParser):
         self.ocr_agent = lp.TesseractAgent()
 
     def parse(self, image):
-        detect_res = self.ocr_agent.detect(image, return_response=True)
+        detect_res = self.ocr_agent.detect(np.array(image), return_response=True)
         return detect_res
 
     def gather_data(self, detect_res, agg_level):
@@ -40,7 +41,7 @@ class Detectron2LayoutParser(LayoutParser):
         )
 
     def parse(self, image):
-        detect_res = self.ocr_agent.detect(image)
+        detect_res = self.ocr_agent.detect(np.array(image))
         return detect_res
 
     def gather_data(self, detect_res, agg_level):
@@ -57,7 +58,7 @@ class PaddleOCRParser(LayoutParser):
             enforce_cpu=False)
 
     def parse(self, image):
-        detect_res = self.ocr_agent.detect(image)
+        detect_res = self.ocr_agent.detect(np.array(image))
         return detect_res
 
     def gather_data(self, detect_res, agg_level):
@@ -72,7 +73,7 @@ class GCVLayoutParser(LayoutParser):
         self.ocr_agent = lp.GCVAgent(languages=['en'])
 
     def parse(self, image):
-        detect_res = self.ocr_agent.detect(image, return_response=True)
+        detect_res = self.ocr_agent.detect(np.array(image), return_response=True)
         return detect_res
 
     def gather_data(self, detect_res, agg_level):
