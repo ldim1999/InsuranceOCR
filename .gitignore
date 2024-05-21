@@ -1,2 +1,3 @@
-/.idea/
-/credentials/
+**/.idea/
+**/credentials/
+**/__pycache__/
